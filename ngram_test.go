@@ -7,13 +7,13 @@ import (
 )
 
 func TestTrigramlize(t *testing.T) {
-	ret := ExtractStringToNgram("Cod")
+	ret := ExtractStringToNgram("Cod", Trigram)
 	if ret[0] != 4419428 {
 		t.Errorf("Trigram failed, expect 4419428\n")
 	}
 
 	//string length longer than 3
-	ret = ExtractStringToNgram("Code")
+	ret = ExtractStringToNgram("Code", Trigram)
 	if ret[0] != 4419428 && ret[1] != 7300197 {
 		t.Errorf("Trigram failed on longer string")
 	}
@@ -60,7 +60,7 @@ func TestTrigramIndexBasicQuery(t *testing.T) {
 }
 
 func TestEmptyLessQuery(t *testing.T) {
-	ti := NewNgramIndex(Twogram)
+	ti := NewNgramIndex(Trigram)
 	ti.Add("Code is my life")
 	ti.Add("Search")
 	ti.Add("I write a lot of Codes")

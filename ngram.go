@@ -10,12 +10,12 @@ func (d docList) Len() int           { return len(d) }
 func (d docList) Swap(i, j int)      { d[i], d[j] = d[j], d[i] }
 func (d docList) Less(i, j int) bool { return d[i] < d[j] }
 
-type NgramBase int
+type NgramType int
 
 const ( // iota is reset to 0
-	Twogram  NgramBase = iota // 0
-	Trigram  NgramBase = iota // 1
-	Fourgram NgramBase = iota // 2
+	Twogram  NgramType = 2 // 0
+	Trigram  NgramType = 3 // 1
+	Fourgram NgramType = 4 // 2
 )
 
 //The trigram indexing result include all Document IDs and its Frequence in that document
@@ -27,18 +27,23 @@ type IndexResult struct {
 	Freq map[int]int
 }
 
-// Extract one string to trigram list
-// Note the Trigram is a uint32 for ascii code
-func ExtractStringToNgram(str string) []Ngram {
+// Extract one string to ngram list
+// Note the Ngram is a uint32 for ascii code
+func ExtractStringToNgram(str string, nType NgramType) []Ngram {
 	if len(str) == 0 {
 		return nil
 	}
 
+	nTypeInt := int(nType)
 	var result []Ngram
-	for i := 0; i < len(str)-2; i++ {
-		var trigram Ngram
-		trigram = Ngram(uint32(str[i])<<16 | uint32(str[i+1])<<8 | uint32(str[i+2]))
-		result = append(result, trigram)
+	for i := 0; i < len(str)-(nTypeInt-1); i++ {
+		var ngram Ngram
+		for j := 0; j < nTypeInt; j++ {
+			//ngram = Ngram(uint32(str[i])<<16 | uint32(str[i+1])<<8 | uint32(str[i+2]))
+			shift := uint(j * 8)
+			ngram = ngram + Ngram(uint32(str[i+(nTypeInt-1-j)])<<shift)
+		}
+		result = append(result, ngram)
 	}
 
 	return result
@@ -53,20 +58,24 @@ type NgramIndex struct {
 
 	//it include currently all the doc list, it will be used when query string length less than 3
 	docIDsMap map[int]bool
+
+	//Ngram type
+	ngramType NgramType
 }
 
 //Create a new trigram indexing
-func NewNgramIndex(nType NgramBase) *NgramIndex {
+func NewNgramIndex(nType NgramType) *NgramIndex {
 	t := new(NgramIndex)
 	t.TrigramMap = make(map[Ngram]IndexResult)
 	t.docIDsMap = make(map[int]bool)
+	t.ngramType = nType
 	return t
 }
 
 //Add new document into this trigram index
 func (t *NgramIndex) Add(doc string) int {
 	newDocID := t.maxDocID + 1
-	trigrams := ExtractStringToNgram(doc)
+	trigrams := ExtractStringToNgram(doc, t.ngramType)
 	for _, tg := range trigrams {
 		var mapRet IndexResult
 		var exist bool
@@ -98,7 +107,7 @@ func (t *NgramIndex) Add(doc string) int {
 
 //Delete a doc from this trigram indexing
 func (t *NgramIndex) Delete(doc string, docID int) {
-	trigrams := ExtractStringToNgram(doc)
+	trigrams := ExtractStringToNgram(doc, t.ngramType)
 	for _, tg := range trigrams {
 		if obj, exist := t.TrigramMap[tg]; exist {
 			if freq, docExist := obj.Freq[docID]; docExist && freq > 1 {
@@ -147,7 +156,7 @@ func IntersectTwoMap(IDsA, IDsB map[int]bool) map[int]bool {
 
 //Query a target string to return the doc ID
 func (t *NgramIndex) Query(doc string) docList {
-	trigrams := ExtractStringToNgram(doc)
+	trigrams := ExtractStringToNgram(doc, t.ngramType)
 	if len(trigrams) == 0 {
 		return t.getAllDocIDs()
 	}
