@@ -6,6 +6,13 @@ import (
 	. "github.com/kkdai/ngram"
 )
 
+func TestTwogramlize(t *testing.T) {
+	ret := ExtractStringToNgram("Cod", Twogram)
+	if ret[0] != 17263 || ret[1] != 28516 {
+		t.Errorf("Trigram failed, current:", ret)
+	}
+}
+
 func TestTrigramlize(t *testing.T) {
 	ret := ExtractStringToNgram("Cod", Trigram)
 	if ret[0] != 4419428 {
@@ -92,15 +99,43 @@ func TestDelete(t *testing.T) {
 	}
 }
 
-func BenchmarkAdd(b *testing.B) {
+func BenchmarkAddTwogram(b *testing.B) {
 	big := NewNgramIndex(Twogram)
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		big.Add("1234567890")
 	}
 }
+func BenchmarkAddTrigram(b *testing.B) {
+	big := NewNgramIndex(Trigram)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Add("1234567890")
+	}
+}
 
-func BenchmarkDelete(b *testing.B) {
+func BenchmarkAddFourgran(b *testing.B) {
+	big := NewNgramIndex(Fourgram)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Add("1234567890")
+	}
+}
+func BenchmarkDeleteTwogram(b *testing.B) {
+
+	big := NewNgramIndex(Twogram)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Add("1234567890")
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Delete("1234567890", i)
+	}
+}
+
+func BenchmarkDeleteTrigram(b *testing.B) {
 
 	big := NewNgramIndex(Trigram)
 	b.ResetTimer()
@@ -114,7 +149,35 @@ func BenchmarkDelete(b *testing.B) {
 	}
 }
 
-func BenchmarkQuery(b *testing.B) {
+func BenchmarkDeleteFourgram(b *testing.B) {
+
+	big := NewNgramIndex(Fourgram)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Add("1234567890")
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Delete("1234567890", i)
+	}
+}
+
+func BenchmarkQueryTwogran(b *testing.B) {
+
+	big := NewNgramIndex(Twogram)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Add("1234567890")
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Query("1234567890")
+	}
+}
+
+func BenchmarkQueryTrigran(b *testing.B) {
 
 	big := NewNgramIndex(Trigram)
 	b.ResetTimer()
@@ -128,11 +191,25 @@ func BenchmarkQuery(b *testing.B) {
 	}
 }
 
-func BenchmarkIntersect(b *testing.B) {
+func BenchmarkQueryFourgram(b *testing.B) {
+
+	big := NewNgramIndex(Fourgram)
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Add("1234567890")
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		big.Query("1234567890")
+	}
+}
+
+func BenchmarkIntersectMap(b *testing.B) {
 
 	DocA := make(map[int]bool)
 	DocB := make(map[int]bool)
-	for i := 0; i < 101; i++ {
+	for i := 0; i < 100000; i++ {
 		DocA[i] = true
 		DocB[i+1] = true
 	}
@@ -140,5 +217,20 @@ func BenchmarkIntersect(b *testing.B) {
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
 		IntersectTwoMap(DocA, DocB)
+	}
+}
+
+func BenchmarkIntersectSlice(b *testing.B) {
+
+	var DocA DocList
+	var DocB DocList
+	for i := 0; i < 100000; i++ {
+		DocA = append(DocA, i)
+		DocB = append(DocB, i+1)
+	}
+
+	b.ResetTimer()
+	for i := 0; i < b.N; i++ {
+		IntersectTwoSlice(DocA, DocB)
 	}
 }

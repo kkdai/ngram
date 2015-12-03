@@ -62,18 +62,33 @@ Benchmark
 Still working to improve the query time.
 
 ```
-BenchmarkAdd-4   	  300000	      6743 ns/op
-BenchmarkDelete-4	  500000	      4021 ns/op
-BenchmarkQuery-4 	   10000	      7894005 ns/op
-BenchmarkIntersect-4  300000	      4496 ns/op
+//Original with Map
+BenchmarkAddTwogram-4    	  200000	      7151 ns/op
+BenchmarkAddTrigram-4    	  300000	      6713 ns/op
+BenchmarkAddFourgran-4   	  300000	      5813 ns/op
+BenchmarkDeleteTwogram-4 	  500000	      4591 ns/op
+BenchmarkDeleteTrigram-4 	  500000	      3695 ns/op
+BenchmarkDeleteFourgram-4	  500000	      3297 ns/op
+BenchmarkQueryTwogran-4  	   10000	   8361813 ns/op
+BenchmarkQueryTrigran-4  	   10000	   7650419 ns/op
+BenchmarkQueryFourgram-4 	   10000	   6975925 ns/op
+BenchmarkIntersectMap-4  	     200	   7834764 ns/op
+BenchmarkIntersectSlice-4	     500	   2986213 ns/op
+
+
+//Using slice in docIDs
+
+
 ```
 
 BTW: Here is benchmark for [https://github.com/dgryski/go-trigram](https://github.com/dgryski/go-trigram) for my improvement record:
 
+
+
 ```
-BenchmarkAdd-4   	 1000000	      1063 ns/op
-BenchmarkDelete-4	  100000	    140392 ns/op
-BenchmarkQuery-4 	   10000	    474320 ns/op
+BenchmarkAdd-4       1000000          1063 ns/op
+BenchmarkDelete-4     100000        140392 ns/op
+BenchmarkQuery-4       10000        474320 ns/op
 ```
 
 Inspired
