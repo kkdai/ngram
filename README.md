@@ -77,7 +77,30 @@ BenchmarkIntersectSlice-4	     500	   2986213 ns/op
 
 
 //Using slice in docIDs
+BenchmarkAddTwogram-4    	   30000	    162352 ns/op
+BenchmarkAddTrigram-4    	   30000	    142771 ns/op
+BenchmarkAddFourgran-4   	   30000	    130655 ns/op
+BenchmarkDeleteTwogram-4 	   20000	    169485 ns/op
+BenchmarkDeleteTrigram-4 	   20000	    147598 ns/op
+BenchmarkDeleteFourgram-4	   20000	    129833 ns/op
+BenchmarkQueryTwogran-4  	   10000	   2295375 ns/op
+BenchmarkQueryTrigran-4  	   10000	   2161023 ns/op
+BenchmarkQueryFourgram-4 	   10000	   2032144 ns/op
+BenchmarkIntersectMap-4  	     200	   8216303 ns/op
+BenchmarkIntersectSlice-4	    1000	   2245023 ns/op
 
+//Operate in map but intersect in slice
+BenchmarkAddTwogram-4    	  200000	      7766 ns/op
+BenchmarkAddTrigram-4    	  200000	      6313 ns/op
+BenchmarkAddFourgran-4   	  300000	      6302 ns/op
+BenchmarkDeleteTwogram-4 	  500000	      4743 ns/op
+BenchmarkDeleteTrigram-4 	  500000	      3854 ns/op
+BenchmarkDeleteFourgram-4	  500000	      3317 ns/op
+BenchmarkQueryTwogran-4  	   10000	  28069290 ns/op
+BenchmarkQueryTrigran-4  	   10000	  24906564 ns/op
+BenchmarkQueryFourgram-4 	   10000	  20321440 ns/op
+BenchmarkIntersectMap-4  	     200	   8216303 ns/op
+BenchmarkIntersectSlice-4	    1000	   2245023 ns/op
 
 ```
 

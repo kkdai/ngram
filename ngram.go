@@ -39,7 +39,6 @@ func ExtractStringToNgram(str string, nType NgramType) []Ngram {
 	for i := 0; i < len(str)-(nTypeInt-1); i++ {
 		var ngram Ngram
 		for j := 0; j < nTypeInt; j++ {
-			//ngram = Ngram(uint32(str[i])<<16 | uint32(str[i+1])<<8 | uint32(str[i+2]))
 			shift := uint(j * 8)
 			ngram = ngram + Ngram(uint32(str[i+(nTypeInt-1-j)])<<shift)
 		}
@@ -82,20 +81,14 @@ func (t *NgramIndex) Add(doc string) int {
 		if mapRet, exist = t.TrigramMap[tg]; !exist {
 			//New doc ID handle
 			mapRet = IndexResult{}
-			//mapRet.DocIDs= make(map[int]bool)
 			mapRet.Freq = make(map[int]int)
 			mapRet.DocIDs = append(mapRet.DocIDs, newDocID)
 			mapRet.Freq[newDocID] = 1
 		} else {
 			//trigram already exist on this doc
-			docExist := false
-			for _, v := range mapRet.DocIDs {
-				if v == newDocID {
-					mapRet.Freq[newDocID] = mapRet.Freq[newDocID] + 1
-				}
-			}
-
-			if !docExist {
+			if _, exist := mapRet.Freq[newDocID]; exist {
+				mapRet.Freq[newDocID] = mapRet.Freq[newDocID] + 1
+			} else {
 				//tg eixist but new doc id is not exist, add it
 				mapRet.DocIDs = append(mapRet.DocIDs, newDocID)
 				mapRet.Freq[newDocID] = 1
@@ -120,7 +113,6 @@ func (t *NgramIndex) Delete(doc string, docID int) {
 			} else {
 				//need remove trigram from such docID
 				delete(obj.Freq, docID)
-				//delete(obj.DocIDs, docID)
 				for i, v := range obj.DocIDs {
 					if v == docID {
 						obj.DocIDs = append(obj.DocIDs[:i], obj.DocIDs[i+1:]...)
@@ -220,7 +212,6 @@ func (t *NgramIndex) Query(doc string) DocList {
 			return nil
 		}
 		checkIDs := checkObj.DocIDs
-		//retIDs = IntersectTwoMap(retIDs, checkIDs)
 		retIDs = IntersectTwoSlice(retIDs, checkIDs)
 	}
 

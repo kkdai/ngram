@@ -83,6 +83,26 @@ func TestEmptyLessQuery(t *testing.T) {
 	}
 }
 
+func TestEmptyLessQuery2(t *testing.T) {
+	ti := NewNgramIndex(Fourgram)
+
+	docs := []string{"Don't communicate by sharing memory, share memory by communicating.", "Channels orchestrate; mutexes serialize.", "The bigger the interface, the weaker the abstraction.", "Make the zero value useful", "interface{} says nothing"}
+
+	for _, v := range docs {
+		ti.Add(v)
+	}
+
+	ret := ti.Query("the") //less than 4, should get all doc ID
+	if len(ret) != 5 || ret[0] != 1 || ret[2] != 3 {
+		t.Errorf("Error on less than 4 character query")
+	}
+
+	ret = ti.Query("interface")
+	if len(ret) != 2 || ret[0] != 3 || ret[1] != 5 {
+		t.Errorf("Error on empty character query")
+	}
+}
+
 func TestDelete(t *testing.T) {
 	ti := NewNgramIndex(Trigram)
 	ti.Add("Code is my life")
