@@ -1,12 +1,24 @@
-Ntram Indexing
+Ngram Indexing
 ==================
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/kkdai/ntram/master/LICENSE)  [![GoDoc](https://godoc.org/github.com/kkdai/ntram?status.svg)](https://godoc.org/github.com/kkdai/ntram)  [![Build Status](https://travis-ci.org/kkdai/ntram.svg?branch=master)](https://travis-ci.org/kkdai/ntram)
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/kkdai/ngram/master/LICENSE)  [![GoDoc](https://godoc.org/github.com/kkdai/ngram?status.svg)](https://godoc.org/github.com/kkdai/ngram)  [![Build Status](https://travis-ci.org/kkdai/ngram.svg?branch=master)](https://travis-ci.org/kkdai/ngram)
 
 
-This package provide a simple way to "Trigram Indexing" in input document. It is refer from an article - [Google Code Search](https://github.com/google/codesearch).
+This package provide a simple way to "Nrigram Indexing" in input document. It is refer from an article - [Google Code Search](https://github.com/google/codesearch).
+
 
 Here is the [introduction](http://www.evanlin.com/trigram-study-note/) what is "trigram indexing" and how Google Code Search use it for search but it is in Chinese :) .
+
+
+Performance Optimization
+---------------
+
+This package base on my another project [Trigram](https://github.com/kkdai/trigram), but it got better performance(**~3 times**). (refer Benchmark)
+
+It has done as follow:
+
+- Replace operation data in slice rather than map in intersect operation
+- But still remain using map in query
 
 
 How it works
@@ -22,7 +34,7 @@ Here is some trigram rule as follow:
  
 Install
 ---------------
-`go get github.com/kkdai/trigram`
+`go get github.com/kkdai/ngram`
 
 
 Usage
@@ -34,10 +46,11 @@ package main
 
 import (
 	"fmt"
-	. "github.com/kkdai/trigram"
+	. "github.com/kkdai/ngram"
 	)
 func main() {	
-	ti := NewTrigramIndex()
+	//Currently is support Twogram, Trigram and Fourgram
+	ti := NewTrigramIndex(Trigram)
 	ti.Add("Code is my life")			//doc 1
 	ti.Add("Search")						//doc 2
 	ti.Add("I write a lot of Codes") //doc 3
@@ -62,7 +75,7 @@ Benchmark
 Still working to improve the query time.
 
 ```
-//Original with Map
+//Original benchmark in trigram
 BenchmarkAddTwogram-4    	  200000	      7151 ns/op
 BenchmarkAddTrigram-4    	  300000	      6713 ns/op
 BenchmarkAddFourgran-4   	  300000	      5813 ns/op
@@ -72,36 +85,18 @@ BenchmarkDeleteFourgram-4	  500000	      3297 ns/op
 BenchmarkQueryTwogran-4  	   10000	   8361813 ns/op
 BenchmarkQueryTrigran-4  	   10000	   7650419 ns/op
 BenchmarkQueryFourgram-4 	   10000	   6975925 ns/op
-BenchmarkIntersectMap-4  	     200	   7834764 ns/op
-BenchmarkIntersectSlice-4	     500	   2986213 ns/op
 
 
-//Using slice in docIDs
-BenchmarkAddTwogram-4    	   30000	    162352 ns/op
-BenchmarkAddTrigram-4    	   30000	    142771 ns/op
-BenchmarkAddFourgran-4   	   30000	    130655 ns/op
-BenchmarkDeleteTwogram-4 	   20000	    169485 ns/op
-BenchmarkDeleteTrigram-4 	   20000	    147598 ns/op
-BenchmarkDeleteFourgram-4	   20000	    129833 ns/op
-BenchmarkQueryTwogran-4  	   10000	   2295375 ns/op
-BenchmarkQueryTrigran-4  	   10000	   2161023 ns/op
-BenchmarkQueryFourgram-4 	   10000	   2032144 ns/op
-BenchmarkIntersectMap-4  	     200	   8216303 ns/op
-BenchmarkIntersectSlice-4	    1000	   2245023 ns/op
-
-//Operate in map but intersect in slice
-BenchmarkAddTwogram-4    	  200000	      7766 ns/op
-BenchmarkAddTrigram-4    	  200000	      6313 ns/op
-BenchmarkAddFourgran-4   	  300000	      6302 ns/op
-BenchmarkDeleteTwogram-4 	  500000	      4743 ns/op
-BenchmarkDeleteTrigram-4 	  500000	      3854 ns/op
-BenchmarkDeleteFourgram-4	  500000	      3317 ns/op
-BenchmarkQueryTwogran-4  	   10000	  28069290 ns/op
-BenchmarkQueryTrigran-4  	   10000	  24906564 ns/op
-BenchmarkQueryFourgram-4 	   10000	  20321440 ns/op
-BenchmarkIntersectMap-4  	     200	   8216303 ns/op
-BenchmarkIntersectSlice-4	    1000	   2245023 ns/op
-
+//Optimize result
+BenchmarkAddTwogram-4    	  300000	      5737 ns/op
+BenchmarkAddTrigram-4    	  500000	      4795 ns/op
+BenchmarkAddFourgran-4   	  500000	      4158 ns/op
+BenchmarkDeleteTwogram-4 	   20000	    167246 ns/op
+BenchmarkDeleteTrigram-4 	   20000	    148756 ns/op
+BenchmarkDeleteFourgram-4	   20000	    128022 ns/op
+BenchmarkQueryTwogran-4  	   10000	   2461910 ns/op
+BenchmarkQueryTrigran-4  	   10000	   2276625 ns/op
+BenchmarkQueryFourgram-4 	   10000	   2172323 ns/op
 ```
 
 BTW: Here is benchmark for [https://github.com/dgryski/go-trigram](https://github.com/dgryski/go-trigram) for my improvement record:
