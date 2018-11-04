@@ -9,7 +9,7 @@ import (
 func TestTwogramlize(t *testing.T) {
 	ret := ExtractStringToNgram("Cod", Twogram)
 	if ret[0] != 17263 || ret[1] != 28516 {
-		t.Errorf("Trigram failed, current:", ret)
+		t.Errorf("Trigram failed, current:%v", ret)
 	}
 }
 
