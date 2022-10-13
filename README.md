@@ -1,8 +1,7 @@
 Ngram Indexing
 ==================
 
-[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/kkdai/ngram/master/LICENSE)  [![GoDoc](https://godoc.org/github.com/kkdai/ngram?status.svg)](https://godoc.org/github.com/kkdai/ngram)  [![Build Status](https://travis-ci.org/kkdai/ngram.svg?branch=master)](https://travis-ci.org/kkdai/ngram)
-
+[![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://raw.githubusercontent.com/kkdai/ngram/master/LICENSE)  [![GoDoc](https://godoc.org/github.com/kkdai/ngram?status.svg)](https://godoc.org/github.com/kkdai/ngram)  [![Go](https://github.com/kkdai/ngram/actions/workflows/go.yml/badge.svg)](https://github.com/kkdai/ngram/actions/workflows/go.yml)
 
 This package provide a simple way to "Nrigram Indexing" in input document. It is refer from an article - [Google Code Search](https://github.com/google/codesearch).
 
