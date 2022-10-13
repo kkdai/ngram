@@ -50,7 +50,7 @@ import (
 	)
 func main() {	
 	//Currently is support Twogram, Trigram and Fourgram
-	ti := NewTrigramIndex(Trigram)
+	ti := NewNgramIndex(Trigram)
 	ti.Add("Code is my life")			//doc 1
 	ti.Add("Search")						//doc 2
 	ti.Add("I write a lot of Codes") //doc 3
